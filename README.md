@@ -1,18 +1,20 @@
 # ffMetadataEx
 
-Standalone FFmpeg metadata extractor app plugin for [OuterTune](https://github.com/DD3Boh/OuterTune)
+Standalone extra app plugin for [OuterTune](https://github.com/DD3Boh/OuterTune)
 
 ## Usage
 
-ffMetadataEx is an optional standalone plugin that contains the FFmpeg libraries required for the FFmpeg tag extractor.
+ffMetadataEx is an optional standalone plugin that contains the FFmpeg libraries required for OuterTine's FFmpeg tag
+extractor.
 
-1. Install ffMetadataEx. [Download](https://github.com/mikooomich/ffMetadataEx/releases) one that is compatible with your OuterTune version.
+1. Install ffMetadataEx. [Download](https://github.com/mikooomich/ffMetadataEx/releases) one that is compatible with
+   your OuterTune version.
 
 2. Grant ffMetadataEx either permission: storage or "Music and audio". Both OuterTune AND ffMetadataEx require this
-3. permission.
+   permission.
 
-3. Select scanner. To configure which scanner implementation OuterTune will use, open the OuterTune app and navigate to
-4. "settings --> Local media -> Metadata extractor". Then select the desired extractor.
+3. Select this scanner implementation. To configure which scanner implementation OuterTune will use, open the OuterTune
+   app and navigate to "settings --> Local media -> Metadata extractor". Then select the desired extractor.
 
 ## Developer use
 
