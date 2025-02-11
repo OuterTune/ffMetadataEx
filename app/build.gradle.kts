@@ -47,6 +47,16 @@ android {
 
 	ndkVersion = "27.0.11718014"
 
+	applicationVariants.all {
+		val variant = this
+		variant.outputs
+			.map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+			.forEach { output ->
+				val outputFileName = "ffMetadataEx-${variant.versionName}-${variant.baseName}.apk"
+				output.outputFileName = outputFileName
+			}
+	}
+
 	compileOptions {
 		sourceCompatibility = JavaVersion.VERSION_17
 		targetCompatibility = JavaVersion.VERSION_17
