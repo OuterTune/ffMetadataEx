@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "ffMetadataEx"
-include(":app")
+include(":ffMetadataEx")

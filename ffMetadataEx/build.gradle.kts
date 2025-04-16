@@ -62,8 +62,8 @@ android {
 		variant.outputs
 			.map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
 			.forEach { output ->
-				val outputFileName = "ffMetadataEx-${variant.versionName}-${variant.baseName}.apk"
-				output.outputFileName += outputFileName
+				val outputFileName = "-${variant.versionName}-${variant.baseName}.apk"
+				output.outputFileName = output.outputFileName.substringBeforeLast(".apk") + outputFileName
 			}
 	}
 

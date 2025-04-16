@@ -15,6 +15,6 @@
 local.properties
 
 .idea
-app/src/main/cpp/ffmpeg-android-maker
-app/src/main/cpp/src/
-app/release
+ffMetadataEx/src/main/cpp/ffmpeg-android-maker
+ffMetadataEx/src/main/cpp/src/
+ffMetadataEx/release
