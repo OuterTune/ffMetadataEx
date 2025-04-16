@@ -41,11 +41,11 @@ android {
 	externalNativeBuild {
 		cmake {
 			path = file("src/main/cpp/CMakeLists.txt")
-			version = "3.22.1"
+			version = "3.31.6"
 		}
 	}
 
-	ndkVersion = "27.0.11718014"
+	ndkVersion = "29.0.13113456"
 
 	applicationVariants.all {
 		val variant = this
