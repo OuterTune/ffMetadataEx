@@ -32,6 +32,16 @@ android {
 		}
 	}
 
+	splits {
+		abi {
+			isEnable = true
+			reset()
+
+			include("x86", "x86_64", "armeabi-v7a", "arm64-v8a")
+			isUniversalApk = true
+		}
+	}
+
 	sourceSets {
 		getByName("main") {
 			jniLibs.srcDirs("src/main/cpp/ffmpeg-android-maker/output/lib/")
@@ -53,7 +63,7 @@ android {
 			.map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
 			.forEach { output ->
 				val outputFileName = "ffMetadataEx-${variant.versionName}-${variant.baseName}.apk"
-				output.outputFileName = outputFileName
+				output.outputFileName += outputFileName
 			}
 	}
 
