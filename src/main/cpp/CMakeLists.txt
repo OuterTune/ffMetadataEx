@@ -11,7 +11,7 @@ set_target_properties( # Specifies the target library.
 		PROPERTIES IMPORTED_LOCATION
 
 		# Provides the path to the library you want to import.
-		${CMAKE_SOURCE_DIR}/ffmpeg-android-maker/output/lib/${ANDROID_ABI}/libavformat.so)
+		${CMAKE_SOURCE_DIR}../../../../ffmpeg-android-maker/output/lib/${ANDROID_ABI}/libavformat.so)
 
 
 add_library(avutil SHARED IMPORTED)
@@ -22,7 +22,7 @@ set_target_properties( # Specifies the target library.
 		PROPERTIES IMPORTED_LOCATION
 
 		# Provides the path to the library you want to import.
-		${CMAKE_SOURCE_DIR}/ffmpeg-android-maker/output/lib/${ANDROID_ABI}/libavutil.so)
+		${CMAKE_SOURCE_DIR}../../../../ffmpeg-android-maker/output/lib/${ANDROID_ABI}/libavutil.so)
 
 add_library(avcodec SHARED IMPORTED)
 set_target_properties( # Specifies the target library.
@@ -32,11 +32,11 @@ set_target_properties( # Specifies the target library.
 		PROPERTIES IMPORTED_LOCATION
 
 		# Provides the path to the library you want to import.
-		${CMAKE_SOURCE_DIR}/ffmpeg-android-maker/output/lib/${ANDROID_ABI}/libavcodec.so)
+		${CMAKE_SOURCE_DIR}../../../../ffmpeg-android-maker/output/lib/${ANDROID_ABI}/libavcodec.so)
 
 
 # Include FFmpeg headers
-include_directories(${CMAKE_SOURCE_DIR}/ffmpeg-android-maker/output/include/${ANDROID_ABI})
+include_directories(${CMAKE_SOURCE_DIR}../../../../ffmpeg-android-maker/output/include/${ANDROID_ABI})
 
 add_library(ffmetaexjni SHARED ffMetaExJni.cpp)
 
