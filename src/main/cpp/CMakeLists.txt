@@ -2,6 +2,14 @@
 cmake_minimum_required(VERSION 3.10.2)
 project(ffMetadataEx)
 
+# from https://github.com/Kyant0/taglib
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -fvisibility=hidden -flto -fdata-sections -ffunction-sections -fomit-frame-pointer")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fvisibility=hidden -flto -fdata-sections -ffunction-sections -fomit-frame-pointer")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -flto -Wl,--exclude-libs,ALL -Wl,--gc-sections -s -Wl,--pack-dyn-relocs=android -Wl,--build-id=none -Wl,-z,max-page-size=16384")
+
+set(VISIBILITY_HIDDEN ON)
+set(BUILD_BINDINGS OFF)
+set(BUILD_TESTING OFF)
 
 add_library(avformat SHARED IMPORTED)
 set_target_properties( # Specifies the target library.
