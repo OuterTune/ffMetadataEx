@@ -20,6 +20,9 @@
 
 #include <jni.h>
 #include <string>
+#include <vector>
+
+jobject toJstring(JNIEnv *pEnv, const char *album);
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -27,95 +30,188 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
-extern "C" JNIEXPORT jstring JNICALL
-Java_wah_mikooomich_ffMetadataEx_FFMpegWrapper_getFullAudioMetadata(JNIEnv *env, jobject obj, jstring filePath) {
-	const char *file_path = env->GetStringUTFChars(filePath, nullptr);
-	if (!file_path) {
-		return env->NewStringUTF("Error getting file path");
-	}
 
-	AVFormatContext *format_context = nullptr;
-	if (avformat_open_input(&format_context, file_path, nullptr, nullptr) != 0) {
-		env->ReleaseStringUTFChars(filePath, file_path);
-		return env->NewStringUTF("Error opening file");
-	}
+extern "C" JNIEXPORT jobject JNICALL
+Java_wah_mikooomich_ffMetadataEx_FFMpegWrapper_getFullAudioMetadata(JNIEnv *env, jobject obj,
+                                                                    jstring filePath) {
 
-	// Retrieve stream information
-	if (avformat_find_stream_info(format_context, nullptr) < 0) {
-		avformat_close_input(&format_context);
-		env->ReleaseStringUTFChars(filePath, file_path);
-		return env->NewStringUTF("Error finding stream information");
-	}
+    // create jobject
+    jclass metadataClass = env->FindClass("wah/mikooomich/ffMetadataEx/AudioMetadata");
+    if (metadataClass == nullptr) {
+        return nullptr;
+    }
+    jobject ret = env->NewObject(metadataClass, env->GetMethodID(metadataClass, "<init>", "()V"));
+    if (ret == nullptr) {
+        return nullptr;
+    }
+    jfieldID fid;
 
-	// get audio stream
-	int audio_stream_index = -1;
-	for (int i = 0; i < format_context->nb_streams; i++) {
-		if (format_context->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
-			audio_stream_index = i;
-			break;
-		}
-	}
+    // extract from file
+    const char *file_path = env->GetStringUTFChars(filePath, nullptr);
+    if (!file_path) {
+        fid = env->GetFieldID(metadataClass, "status", "I");
+        env->SetIntField(ret, fid, 1001);
+        return ret;
+    }
 
-	std::string result;
+    AVFormatContext *format_context = nullptr;
+    if (avformat_open_input(&format_context, file_path, nullptr, nullptr) != 0) {
+        env->ReleaseStringUTFChars(filePath, file_path);
+        fid = env->GetFieldID(metadataClass, "status", "I");
+        env->SetIntField(ret, fid, 1002);
+        return ret;
+    }
 
-	// container tags (audio containers e.g. flac, mp3)
-	AVDictionaryEntry *tag = nullptr;
-	while ((tag = av_dict_get(format_context->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) {
-		result += tag->key;
-		result += ": ";
-		result += tag->value;
-		result += "\n";
-	}
+    if (avformat_find_stream_info(format_context, nullptr) < 0) {
+        avformat_close_input(&format_context);
+        env->ReleaseStringUTFChars(filePath, file_path);
+        fid = env->GetFieldID(metadataClass, "status", "I");
+        env->SetIntField(ret, fid, 1003);
+        return ret;
+    }
 
-	// bitrate
-	result += "\nbitrate: " + std::to_string(format_context->bit_rate);
+    int audio_stream_index = -1;
+    for (unsigned int i = 0; i < format_context->nb_streams; i++) {
+        if (format_context->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
+            audio_stream_index = i;
+            break;
+        }
+    }
 
-	// audio stream tags (for mixed containers e.g. ogg)
-	if (audio_stream_index >= 0) {
-		AVStream *audio_stream = format_context->streams[audio_stream_index];
-		AVCodecParameters *codecpar = audio_stream->codecpar;
+    // audio file metadata
+    const char *title = nullptr;
+    const char *artist = nullptr;
+    const char *album = nullptr;
+    const char *genre = nullptr;
+    std::vector<std::string> extraRaw;
 
-		// add codec information
-		const char *codec_type = av_get_media_type_string(codecpar->codec_type);
-		if (codec_type != nullptr) {
-			result += "\ntype: ";
-			result += codec_type;
-		}
+    // audio stream metadata
+    const char *codec_name = nullptr;
+    const char *codec_type = nullptr;
+    int64_t bitrate = format_context->bit_rate;
+    int sample_rate = 0;
+    int channels = 0;
+    int64_t duration = format_context->duration;
 
-		const AVCodec *codec = avcodec_find_decoder(codecpar->codec_id);
-		if (codec != nullptr) {
-			result += "\ncodec: ";
-			result += codec->long_name;
-		} else {
-			result += "\ncodec: Unknown";
-		}
+    // container level tags (audio formats e.g. flac, mp3)
+    AVDictionaryEntry *tag = nullptr;
+    while ((tag = av_dict_get(format_context->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) {
+        if (strcasecmp(tag->key, "title") == 0) {
+            title = tag->value;
+        } else if (strcasecmp(tag->key, "artist") == 0 || strcasecmp(tag->key, "artists") == 0) {
+            artist = tag->value;
+        } else if (strcasecmp(tag->key, "album") == 0) {
+            album = tag->value;
+        } else if (strcasecmp(tag->key, "genre") == 0) {
+            genre = tag->value;
+        } else {
+            std::string entry = std::string(tag->key) + ": " + std::string(tag->value);
+            extraRaw.push_back(entry);
+        }
+    }
 
-		// misc stream data
-		result += "\nduration: " + std::to_string(format_context->duration);
-		result += "\nsampleRate: " + std::to_string(codecpar->sample_rate);
-		result += "\nchannels: " + std::to_string(codecpar->ch_layout.nb_channels);
+    // audio stream tags (for mixed containers e.g. ogg)
+    if (audio_stream_index >= 0) {
+        AVStream *audio_stream = format_context->streams[audio_stream_index];
+        AVCodecParameters *codecpar = audio_stream->codecpar;
 
-		// these show up as 0
-		/*
-		 * codecpar->bits_per_raw_sample
-		 * codecpar->bits_per_coded_sample
-		 * codecpar->frame_size
-		 * codecpar->bit_rate (use container bitrate instead
-		 */
-		result += "\n";
+        // add codec information
+        sample_rate = codecpar->sample_rate;
+        channels = codecpar->ch_layout.nb_channels;
 
-		// add audio stream tags (ID3 result)
-		tag = nullptr;
-		while ((tag = av_dict_get(audio_stream->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) {
-			result += tag->key;
-			result += ": ";
-			result += tag->value;
-			result += "\n";
-		}
-	}
+        const AVCodec *codec = avcodec_find_decoder(codecpar->codec_id);
+        if (codec != nullptr) {
+            codec_name = codec->long_name;
+        }
+        const char *type = av_get_media_type_string(codecpar->codec_type);
+        if (type != nullptr) {
+            codec_type = type;
+        }
 
-	avformat_close_input(&format_context);
-	env->ReleaseStringUTFChars(filePath, file_path);
+        // add audio stream tags (ID3 result)
+        tag = nullptr;
+        while ((tag = av_dict_get(audio_stream->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) {
+            std::string entry = std::string(tag->key) + ": " + std::string(tag->value);
+            extraRaw.push_back(entry);
+        }
+    }
 
-	return env->NewStringUTF(result.c_str());
+    avformat_close_input(&format_context);
+    env->ReleaseStringUTFChars(filePath, file_path);
+
+    fid = env->GetFieldID(metadataClass, "bitrate", "J");
+    env->SetLongField(ret, fid, bitrate);
+
+    fid = env->GetFieldID(metadataClass, "sampleRate", "I");
+    env->SetIntField(ret, fid, sample_rate);
+
+    fid = env->GetFieldID(metadataClass, "channels", "I");
+    env->SetIntField(ret, fid, channels);
+
+    fid = env->GetFieldID(metadataClass, "duration", "J");
+    env->SetLongField(ret, fid, duration);
+
+    fid = env->GetFieldID(metadataClass, "status", "I");
+    env->SetIntField(ret, fid, 0);
+
+    if (codec_name) {
+        fid = env->GetFieldID(metadataClass, "codec", "Ljava/lang/String;");
+        env->SetObjectField(ret, fid, env->NewStringUTF(codec_name));
+    }
+    if (codec_type) {
+        fid = env->GetFieldID(metadataClass, "codecType", "Ljava/lang/String;");
+        env->SetObjectField(ret, fid, env->NewStringUTF(codec_type));
+    }
+    if (title) {
+        fid = env->GetFieldID(metadataClass, "title", "Ljava/lang/String;");
+        env->SetObjectField(ret, fid, toJstring(env, title));
+    }
+    if (artist) {
+        fid = env->GetFieldID(metadataClass, "artist", "Ljava/lang/String;");
+        env->SetObjectField(ret, fid, toJstring(env, artist));
+    }
+    if (album) {
+        fid = env->GetFieldID(metadataClass, "album", "Ljava/lang/String;");
+        env->SetObjectField(ret, fid, toJstring(env, album));
+    }
+    if (genre) {
+        fid = env->GetFieldID(metadataClass, "genre", "Ljava/lang/String;");
+        env->SetObjectField(ret, fid, toJstring(env, genre));
+    }
+
+    jfieldID extrasField = env->GetFieldID(metadataClass, "extrasRaw", "[Ljava/lang/String;");
+    if (extrasField) {
+        jclass stringClass = env->FindClass("java/lang/String");
+        jobjectArray jExtras = env->NewObjectArray(static_cast<jsize>(extraRaw.size()), stringClass,
+                                                   nullptr);
+        for (jsize i = 0; i < extraRaw.size(); ++i) {
+            jstring jstr = env->NewStringUTF(extraRaw[i].c_str());
+            env->SetObjectArrayElement(jExtras, i, jstr);
+        }
+        env->SetObjectField(ret, extrasField, jExtras);
+    }
+
+    return ret;
+}
+
+jobject toJstring(JNIEnv *env, const char *str) {
+    if (str == nullptr) {
+        return nullptr;
+    }
+
+    size_t len = std::strlen(str);
+    jbyteArray byteArray = env->NewByteArray(static_cast<jsize>(len));
+    env->SetByteArrayRegion(byteArray, 0, static_cast<jsize>(len), reinterpret_cast<const jbyte *>(str));
+
+    jclass stringClass = env->FindClass("java/lang/String");
+    jmethodID ctor = env->GetMethodID(stringClass, "<init>", "([BLjava/lang/String;)V");
+
+    jstring charsetName = env->NewStringUTF("UTF-8");
+    jstring result = static_cast<jstring>(env->NewObject(stringClass, ctor, byteArray, charsetName));
+
+    env->DeleteLocalRef(byteArray);
+    env->DeleteLocalRef(charsetName);
+    env->DeleteLocalRef(stringClass);
+
+    return result;
 }
