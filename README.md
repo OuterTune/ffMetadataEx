@@ -53,7 +53,7 @@ data.extrasRaw.forEach {
 2. Import this module into your app project:
 
     - Building for OuterTune: Additional OuterTune patches are needed for scanner functionality, see this branch for
-      more details, and as reference: https://github.com/OuterTune/OuterTune/tree/feature/ffmetadataex. This configures
+      more details, and as reference: https://github.com/OuterTune/OuterTune/tree/feature/ffMetadataEx. This configures
       ffMetadataEx as a git submodule. This branch will be updated from time to time.
     - For other projects: Import the module and its code into your project manually, then setup Proguard correctly.
 
