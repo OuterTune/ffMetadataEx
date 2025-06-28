@@ -20,9 +20,12 @@
 
 #include <jni.h>
 #include <string>
+#include <unistd.h>
 #include <vector>
 
 jobject toJstring(JNIEnv *pEnv, const char *album);
+
+char *getRealPathFromFd(const int fd);
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -32,8 +35,7 @@ extern "C" {
 
 
 extern "C" JNIEXPORT jobject JNICALL
-Java_wah_mikooomich_ffMetadataEx_FFMpegWrapper_getFullAudioMetadata(JNIEnv *env, jobject obj,
-                                                                    jstring filePath) {
+Java_wah_mikooomich_ffMetadataEx_FFMpegWrapper_getFullAudioMetadata(JNIEnv *env, jobject obj, jint fd) {
 
     // create jobject
     jclass metadataClass = env->FindClass("wah/mikooomich/ffMetadataEx/AudioMetadata");
@@ -47,7 +49,7 @@ Java_wah_mikooomich_ffMetadataEx_FFMpegWrapper_getFullAudioMetadata(JNIEnv *env,
     jfieldID fid;
 
     // extract from file
-    const char *file_path = env->GetStringUTFChars(filePath, nullptr);
+    const char *file_path = getRealPathFromFd(fd);
     if (!file_path) {
         fid = env->GetFieldID(metadataClass, "status", "I");
         env->SetIntField(ret, fid, 1001);
@@ -56,7 +58,6 @@ Java_wah_mikooomich_ffMetadataEx_FFMpegWrapper_getFullAudioMetadata(JNIEnv *env,
 
     AVFormatContext *format_context = nullptr;
     if (avformat_open_input(&format_context, file_path, nullptr, nullptr) != 0) {
-        env->ReleaseStringUTFChars(filePath, file_path);
         fid = env->GetFieldID(metadataClass, "status", "I");
         env->SetIntField(ret, fid, 1002);
         return ret;
@@ -64,7 +65,6 @@ Java_wah_mikooomich_ffMetadataEx_FFMpegWrapper_getFullAudioMetadata(JNIEnv *env,
 
     if (avformat_find_stream_info(format_context, nullptr) < 0) {
         avformat_close_input(&format_context);
-        env->ReleaseStringUTFChars(filePath, file_path);
         fid = env->GetFieldID(metadataClass, "status", "I");
         env->SetIntField(ret, fid, 1003);
         return ret;
@@ -137,7 +137,6 @@ Java_wah_mikooomich_ffMetadataEx_FFMpegWrapper_getFullAudioMetadata(JNIEnv *env,
     }
 
     avformat_close_input(&format_context);
-    env->ReleaseStringUTFChars(filePath, file_path);
 
     fid = env->GetFieldID(metadataClass, "bitrate", "J");
     env->SetLongField(ret, fid, bitrate);
@@ -214,4 +213,30 @@ jobject toJstring(JNIEnv *env, const char *str) {
     env->DeleteLocalRef(stringClass);
 
     return result;
+}
+
+// from taglib https://github.com/Kyant0/taglib/blob/57d6fe6effdf759618a50d5da0b32a0f52bef1bc/src/main/cpp/utils.h
+char *getRealPathFromFd(const int fd) {
+    char path[22];
+    if (snprintf(path, sizeof(path), "/proc/self/fd/%d", fd) < 0) {
+        return nullptr;
+    }
+
+    size_t size = 128;
+    char *link = reinterpret_cast<char *>(malloc(size));
+
+    ssize_t bytesRead;
+    while ((bytesRead = readlink(path, link, size)) == static_cast<ssize_t>(size)) {
+        size *= 2;
+        char *temp = reinterpret_cast<char *>(realloc(link, size));
+        if (temp == nullptr) {
+            free(link);
+            return nullptr;
+        }
+        link = temp;
+    }
+
+    link[bytesRead] = '\0';
+
+    return link;
 }
