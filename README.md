@@ -5,7 +5,7 @@ extractor
 
 ## Usage
 
-1. Install an OuterTune version with ffMetadataEx
+1. Install an [OuterTune version](https://github.com/OuterTune/OuterTune/releases) with ffMetadataEx. These are provided with stable releases (not beta or alpha).
 
 2. Select this scanner implementation. Open the OuterTune app and navigate to
    `Settings --> Library & Content -> Local media -> Metadata extractor`, and select FFmpeg.
@@ -46,15 +46,15 @@ data.extrasRaw.forEach {
 }
 ```
 
+For more examples, see the [OuterTune implementation](https://github.com/OuterTune/OuterTune/blob/dev/app/src/main/java/com/dd3boh/outertune/utils/scanners/FFMpegScanner.kt)
+
 ## Building
 
 1. First you will need to setup the [Android NDK](https://developer.android.com/studio/projects/install-ndk)
 
 2. Import this module into your app project:
 
-    - Building for OuterTune: Additional OuterTune patches are needed for scanner functionality, see this branch for
-      more details, and as reference: https://github.com/OuterTune/OuterTune/tree/feature/ffMetadataEx. This configures
-      ffMetadataEx as a git submodule. This branch will be updated from time to time.
+    - Building for OuterTune: Resolve the git submodule, then proceed with step 3.
     - For other projects: Import the module and its code into your project manually, then setup Proguard correctly.
 
 3. FFmpeg is used to extract metadata from local files. Those binaries must be resolved in one of two ways:
@@ -68,4 +68,4 @@ data.extrasRaw.forEach {
       Clone [prebuilt ffmpeg-android-maker](https://github.com/mikooomich/ffmpeg-android-maker-prebuilt) into
       `<project root>/ffmpeg-android-maker`.
 
-4. Gradle sync, then start the build as you normally would.
+4. Gradle sync, then start the build as you normally would. If you are building for OuterTune, you will need to build with the "github" build variant.
