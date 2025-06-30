@@ -5,9 +5,9 @@ extractor
 
 ## Usage
 
-1. Install an [OuterTune version](https://github.com/OuterTune/OuterTune/releases) with ffMetadataEx. These are provided with stable releases (not beta or alpha).
+1. Install an [OuterTune version](https://github.com/OuterTune/OuterTune/releases) with ffMetadataEx, look for the apk with "github" in its name. For example: OuterTune-0.9.0-github-universal-release-60.apk`. These builds are provided with stable releases (not beta or alpha).
 
-2. Select this scanner implementation. Open the OuterTune app and navigate to
+3. Select this scanner implementation. Open the OuterTune app and navigate to
    `Settings --> Library & Content -> Local media -> Metadata extractor`, and select FFmpeg.
 
 ## Developer use
