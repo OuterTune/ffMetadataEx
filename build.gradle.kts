@@ -1,15 +1,20 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
 	id("com.android.library")
 	kotlin("android")
 }
 
 kotlin {
-	jvmToolchain(17)
+	jvmToolchain(21)
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_21)
+    }
 }
 
 android {
 	namespace = "wah.mikooomich.ffMetadataEx"
-	compileSdk = 35
+	compileSdk = 36
 
 	defaultConfig {
 		minSdk = 24
@@ -37,10 +42,7 @@ android {
 	ndkVersion = "29.0.13113456"
 
 	compileOptions {
-		sourceCompatibility = JavaVersion.VERSION_17
-		targetCompatibility = JavaVersion.VERSION_17
-	}
-	kotlinOptions {
-		jvmTarget = "17"
+		sourceCompatibility = JavaVersion.VERSION_21
+		targetCompatibility = JavaVersion.VERSION_21
 	}
 }
