@@ -5,7 +5,7 @@ extractor
 
 ## Usage
 
-1. Install an [OuterTune version](https://github.com/OuterTune/OuterTune/releases) with ffMetadataEx, look for the apk with "github" in its name. For example: OuterTune-0.9.0-github-universal-release-60.apk`. These builds are provided with stable releases (not beta or alpha).
+1. Install an [OuterTune version](https://github.com/OuterTune/OuterTune/releases) with ffMetadataEx, look for the apk with "full" in its name. For example: OuterTune-0.9.0-full-universal-release-60.apk`. These builds are provided with stable releases (not beta or alpha).
 
 3. Select this scanner implementation. Open the OuterTune app and navigate to
    `Settings --> Library & Content -> Local media -> Metadata extractor`, and select FFmpeg.
@@ -68,4 +68,4 @@ For more examples, see the [OuterTune implementation](https://github.com/OuterTu
       Clone [prebuilt ffmpeg-android-maker](https://github.com/mikooomich/ffmpeg-android-maker-prebuilt) into
       `<project root>/ffmpeg-android-maker`.
 
-4. Gradle sync, then start the build as you normally would. If you are building for OuterTune, you will need to build with the "github" build variant.
+4. Gradle sync, then start the build as you normally would. If you are building for OuterTune, you will need to build with the "full" build variant.
