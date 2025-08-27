@@ -1,18 +1,23 @@
 # ffMetadataEx
 
 Module that contains the FFmpeg libraries required for [OuterTune](https://github.com/OuterTune/OuterTune) FFmpeg tag
-extractor
+extractor and FFmpeg audio decoders.
 
 ## Usage
 
-1. Install an [OuterTune version](https://github.com/OuterTune/OuterTune/releases) with ffMetadataEx, look for the apk with "full" in its name. For example: OuterTune-0.9.0-full-universal-release-60.apk`. These builds are provided with stable releases (not beta or alpha).
+1. Install an [OuterTune version](https://github.com/OuterTune/OuterTune/releases) with ffMetadataEx, look for the apk
+   with "full" in its name. For example: OuterTune-0.9.0-full-universal-release-60.apk`. These builds are provided with
+   stable releases (not beta or alpha).
 
-3. Select this scanner implementation. Open the OuterTune app and navigate to
+2. Select the scanner implementation. Open the OuterTune app and navigate to
    `Settings --> Library & Content -> Local media -> Metadata extractor`, and select FFmpeg.
+
+3. Select the decoder preference. Open the OuterTune app and navigate to
+   `Settings --> Player and audio -> Advanced -> Audio decoder`, and select a decoder preference.
 
 ## Developer use
 
-Metadata is accessible through the AudioMetadata class
+Audio metadata is accessible through the AudioMetadata class.
 
 ### Code example
 
@@ -46,7 +51,14 @@ data.extrasRaw.forEach {
 }
 ```
 
-For more examples, see the [OuterTune implementation](https://github.com/OuterTune/OuterTune/blob/dev/app/src/main/java/com/dd3boh/outertune/utils/scanners/FFMpegScanner.kt)
+For more examples, see
+the [OuterTune implementation](https://github.com/OuterTune/OuterTune/blob/dev/app/src/main/java/com/dd3boh/outertune/utils/scanners/FFMpegScanner.kt)
+
+### Audio decoders via nextlib
+
+If you only need the decoder functionality, you are likely better off
+using [nextlib](https://github.com/anilbeesetti/nextlib) directly. All the documentation and guides are on their GitHub.
+ffMetadataEx does not support any video features.
 
 ## Building
 
@@ -68,4 +80,9 @@ For more examples, see the [OuterTune implementation](https://github.com/OuterTu
       Clone [prebuilt ffmpeg-android-maker](https://github.com/mikooomich/ffmpeg-android-maker-prebuilt) into
       `<project root>/ffmpeg-android-maker`.
 
-4. Gradle sync, then start the build as you normally would. If you are building for OuterTune, you will need to build with the "full" build variant.
+4. Gradle sync, then start the build as you normally would. If you are building for OuterTune, you will need to build
+   with the "full" build variant.
+
+# Attribution
+
+[nextlib](https://github.com/anilbeesetti/nextlib) for audio decoders
