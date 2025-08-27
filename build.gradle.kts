@@ -46,3 +46,8 @@ android {
 		targetCompatibility = JavaVersion.VERSION_21
 	}
 }
+
+dependencies {
+	implementation(libs.annotation)
+	implementation(libs.media3)
+}
