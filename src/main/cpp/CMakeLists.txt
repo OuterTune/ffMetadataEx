@@ -14,7 +14,7 @@ set(BUILD_TESTING OFF)
 set(ffmpeg_libs_names
         avformat avutil avcodec swresample swscale)
 
-set(ffmpeg_dir ${CMAKE_SOURCE_DIR}/../../../../ffmpeg-android-maker/output)
+set(ffmpeg_dir ${CMAKE_SOURCE_DIR}/../../../ffmpeg-android-maker/output)
 set(ffmpeg_libs ${ffmpeg_dir}/lib/${ANDROID_ABI})
 
 foreach (ffmpeg_lib_name ${ffmpeg_libs_names})
