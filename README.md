@@ -86,3 +86,7 @@ ffMetadataEx does not support any video features.
 # Attribution
 
 [nextlib](https://github.com/anilbeesetti/nextlib) for audio decoders
+
+### FFmpeg information for OuterTune releases
+
+See [modules information](./Modules.md)
