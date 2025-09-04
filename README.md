@@ -24,7 +24,7 @@ Audio metadata is accessible through the AudioMetadata class.
 Extract metadata
 
 ```kotlin
-val ffmpeg = FFMpegWrapper()
+val ffmpeg = FFmpegWrapper()
 val data: AudioMetadata? = ffmpeg.getFullAudioMetadata("file path of audio file")
 
 // get metadata tags
@@ -52,7 +52,7 @@ data.extrasRaw.forEach {
 ```
 
 For more examples, see
-the [OuterTune implementation](https://github.com/OuterTune/OuterTune/blob/dev/app/src/main/java/com/dd3boh/outertune/utils/scanners/FFMpegScanner.kt)
+the [OuterTune implementation](https://github.com/OuterTune/OuterTune/blob/dev/app/src/main/java/com/dd3boh/outertune/utils/scanners/FFmpegScanner.kt)
 
 ### Audio decoders via nextlib
 

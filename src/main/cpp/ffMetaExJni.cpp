@@ -35,7 +35,7 @@ extern "C" {
 
 
 extern "C" JNIEXPORT jobject JNICALL
-Java_wah_mikooomich_ffMetadataEx_FFMpegWrapper_getFullAudioMetadata(JNIEnv *env, jobject obj, jint fd) {
+Java_wah_mikooomich_ffMetadataEx_FFmpegWrapper_getFullAudioMetadata(JNIEnv *env, jobject obj, jint fd) {
 
     // create jobject
     jclass metadataClass = env->FindClass("wah/mikooomich/ffMetadataEx/AudioMetadata");

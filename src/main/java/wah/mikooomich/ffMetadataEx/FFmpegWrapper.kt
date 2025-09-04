@@ -23,6 +23,6 @@ package wah.mikooomich.ffMetadataEx
 /**
  * Pain and suffering.
  */
-class FFMpegWrapper {
+class FFmpegWrapper {
     external fun getFullAudioMetadata(fd: Int): AudioMetadata?
 }
