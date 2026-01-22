@@ -25,4 +25,6 @@ package wah.mikooomich.ffMetadataEx
  */
 class FFmpegWrapper {
     external fun getFullAudioMetadata(fd: Int): AudioMetadata?
+
+    external fun getEbur128(fd: Int): Ebur128?
 }

@@ -12,7 +12,7 @@ set(BUILD_BINDINGS OFF)
 set(BUILD_TESTING OFF)
 
 set(ffmpeg_libs_names
-        avformat avutil avcodec swresample swscale)
+        avformat avfilter avutil avcodec swresample swscale)
 
 set(ffmpeg_dir ${CMAKE_SOURCE_DIR}/../../../ffmpeg-android-maker/output)
 set(ffmpeg_libs ${ffmpeg_dir}/lib/${ANDROID_ABI})
@@ -38,6 +38,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         log
         android
         avformat
+        avfilter
         avutil
         avcodec
         swresample
