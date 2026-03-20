@@ -1,53 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-	id("com.android.library")
-	kotlin("android")
-}
-
-kotlin {
-	jvmToolchain(21)
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_21)
-    }
-}
-
-android {
-	namespace = "wah.mikooomich.ffMetadataEx"
-	compileSdk = 36
-
-	defaultConfig {
-		minSdk = 24
-
-		externalNativeBuild {
-			cmake {
-				arguments += listOf("-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id=none")
-			}
-		}
-	}
-
-	sourceSets {
-		getByName("main") {
-			jniLibs.srcDirs("ffmpeg-android-maker/output/lib/")
-		}
-	}
-
-	externalNativeBuild {
-		cmake {
-			path = file("src/main/cpp/CMakeLists.txt")
-			version = "4.1.2"
-		}
-	}
-
-	ndkVersion = "29.0.14206865"
-
-	compileOptions {
-		sourceCompatibility = JavaVersion.VERSION_21
-		targetCompatibility = JavaVersion.VERSION_21
-	}
-}
-
-dependencies {
-	implementation(libs.annotation)
-	implementation(libs.media3)
+//    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
 }

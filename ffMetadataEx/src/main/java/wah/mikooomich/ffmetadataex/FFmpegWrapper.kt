@@ -1,6 +1,6 @@
 /*
  * ffMetadataEx
- * Copyright (C) 2025 OuterTune Project
+ * Copyright (C) 2026 OuterTune Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ package wah.mikooomich.ffMetadataEx
  */
 class FFmpegWrapper {
     external fun getFullAudioMetadata(fd: Int): AudioMetadata?
-
     external fun getVibebur128(fd: Int): Vibebur128?
+    fun getVersionString() = getVerString()
+
+    private external fun getVerString(): String?
 }

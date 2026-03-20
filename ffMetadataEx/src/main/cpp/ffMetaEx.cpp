@@ -41,6 +41,12 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
+extern "C" JNIEXPORT jstring JNICALL
+Java_wah_mikooomich_ffMetadataEx_FFmpegWrapper_getVerString(JNIEnv *env, jobject obj) {
+    auto str = std::string(LIBAVUTIL_IDENT) + ", " + std::string(LIBAVCODEC_IDENT) + ", " +
+               std::string(LIBAVFORMAT_IDENT) + ", " + std::string(LIBAVFILTER_IDENT);
+    return env->NewStringUTF(str.c_str());
+}
 
 extern "C" JNIEXPORT jobject JNICALL
 Java_wah_mikooomich_ffMetadataEx_FFmpegWrapper_getFullAudioMetadata(JNIEnv *env, jobject obj, jint fd) {
