@@ -7,7 +7,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 23
 
 //        testInstrumentationRunner = "androidx.test.runner.AndroidJUnier"tRunn
         externalNativeBuild {
@@ -27,12 +27,11 @@ android {
         }
     }
 
-    // TODO: why did i need this again?
-//    sourceSets {
-//        getByName("main") {
-//            jniLibs.srcDirs("ffmpeg-android-maker/output/lib/")
-//        }
-//    }
+    sourceSets {
+        getByName("main") {
+            jniLibs.setSrcDirs(listOf(rootProject.file("ffmpeg-android-maker/output/lib")))
+        }
+    }
 
     externalNativeBuild {
         cmake {
