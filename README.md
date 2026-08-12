@@ -72,13 +72,13 @@ ffMetadataEx does not support any video features.
 3. FFmpeg is used to extract metadata from local files. Those binaries must be resolved in one of two ways:
 
     - a) Build libraries yourself. Clone [ffmpeg-android-maker](https://github.com/Javernaut/ffmpeg-android-maker) into
-      `<project root>/ffmpeg-android-maker`, run the build script. Note: It may be helpful to modify the
+      `<project root>/../ffmpeg-android-maker`, run the build script. Note: It may be helpful to modify the
       FFmpeg build script disable unneeded FFmpeg features to reduce app size,
       see [here](https://github.com/mikooomich/ffmpeg-android-maker/blob/master/scripts/ffmpeg/build.sh) for an example.
 
     - b) Use prebuilt FFmpeg libraries.
       Clone [prebuilt ffmpeg-android-maker](https://github.com/mikooomich/ffmpeg-android-maker-prebuilt) into
-      `<project root>/ffmpeg-android-maker`.
+      `<project root>..//ffmpeg-android-maker`.
 
 4. Gradle sync, then start the build as you normally would. If you are building for OuterTune, you will need to build
    with the "full" build variant.

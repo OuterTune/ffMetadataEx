@@ -29,7 +29,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            jniLibs.setSrcDirs(listOf(rootProject.file("ffmpeg-android-maker/output/lib")))
+            jniLibs.setSrcDirs(listOf(rootProject.file("../ffmpeg-android-maker/output/lib")))
         }
     }
 
